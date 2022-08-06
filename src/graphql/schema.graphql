@@ -1,0 +1,59 @@
+type Query {
+    message: String
+}
+
+# type User {
+#     id: ID!
+#     google_id: String
+#     github_id: String
+#     create_time: timestamp
+# }
+
+# type Profile {
+#     user_id: ID!
+#     title: String
+#     img_ulr: String
+#     nickname: String
+#     update_time: timestamp
+# }
+
+# type Schedule {
+#     id: ID!
+#     user_id String!
+#     is_offline: Boolean!
+#     start_time: timestamps
+#     end_time: timestamp
+#     location: String
+# }
+
+# type Absent {
+#     id: ID!
+#     user_id: String!
+#     schedule_id: String!
+#     reason: String!
+#     apporval: Boolean
+# }
+
+# type Absent_approval {
+#     id: ID!
+#     user_id: String!
+#     absent_id: String!
+#     is_approved: Boolean!
+#     reason: String
+# }
+
+# type Attendance {
+#     id: ID!
+#     user_id: String!
+#     schedule_id: String!
+#     attendacne_time: timestamp
+#     finish_time: timestamp
+#     status: String
+# }
+
+# type Notification {
+#     id: ID!
+#     user_id: String!
+#     is_read: Boolean!
+#     title: String!
+# }

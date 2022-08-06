@@ -1,0 +1,106 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// goole_id github_id 둘 다 null일 수 없음
+model User {
+  id              String            @id @default(uuid()) @db.Uuid
+  google_id       String?           @db.VarChar(100)
+  github_id       String?           @db.VarChar(100)
+  create_time     DateTime          @default(now()) @db.Timestamptz()
+  profile         Profile?
+  schedule        Schedule[]
+  absent          Absent[]
+  absent_apploval Absent_approval[]
+  attendace       Attendance[]
+  notification    Notification[]
+
+  @@map("user")
+}
+
+// 프로필
+model Profile {
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     String   @id @db.Uuid
+  title       String?  @db.VarChar()
+  img_url     String?  @db.VarChar()
+  nickname    String   @db.VarChar()
+  update_time DateTime @db.Timestamptz()
+
+  @@map("profile")
+}
+
+// 모임
+model Schedule {
+  id         String       @id @default(uuid()) @db.Uuid
+  user       User         @relation(fields: [user_id], references: [id])
+  user_id    String       @db.Uuid
+  is_offline Boolean
+  start_time DateTime     @db.Timestamptz()
+  end_time   DateTime     @db.Timestamptz()
+  location   String?      @db.VarChar()
+  absent     Absent[]
+  attendace  Attendance[]
+
+  @@map("schedule")
+}
+
+// 불참
+model Absent {
+  id              String            @id @default(uuid()) @db.Uuid
+  user            User              @relation(fields: [user_id], references: [id])
+  user_id         String            @db.Uuid
+  schedule        Schedule          @relation(fields: [schedule_id], references: [id])
+  schedule_id     String            @db.Uuid
+  reason          String            @db.VarChar()
+  approval        Boolean           @default(false)
+  absent_approval Absent_approval[]
+
+  @@map("absent")
+}
+
+// 불참 결재
+model Absent_approval {
+  id          String  @id @default(uuid()) @db.Uuid
+  user        User    @relation(fields: [user_id], references: [id])
+  user_id     String  @db.Uuid
+  absent      Absent  @relation(fields: [absent_id], references: [id])
+  absent_id   String  @db.Uuid
+  is_approved Boolean
+  reason      String? @db.VarChar()
+
+  @@map("absent_approval")
+}
+
+// 출석
+model Attendance {
+  id              String   @id @default(uuid()) @db.Uuid
+  user            User     @relation(fields: [user_id], references: [id])
+  user_id         String   @db.Uuid
+  schdele         Schedule @relation(fields: [schedule_id], references: [id])
+  schedule_id     String   @db.Uuid
+  attendacne_time DateTime @default(now()) @db.Timestamptz()
+  finish_time     DateTime @db.Timestamptz()
+  status          String   @db.VarChar()
+
+  @@map("attendance")
+}
+
+// 알림
+model Notification {
+  id      String  @id @default(uuid()) @db.Uuid
+  user    User    @relation(fields: [user_id], references: [id])
+  user_id String  @db.Uuid
+  is_read Boolean @default(false)
+  title   String  @db.VarChar()
+
+  @@map("notification")
+}
